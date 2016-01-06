@@ -100,7 +100,7 @@ int main() {
 
 		scene(t);
 		SDL_UpdateWindowSurface(window);
-		SDL_Delay(100);
+		SDL_Delay(20);
 		t += 1;
 	}
 
