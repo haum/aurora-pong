@@ -25,11 +25,16 @@ int position_y(uint16_t pos, int width) {
 
 void blitpad(uint8_t player) {
 	if (player >= 4) return;
-	blit(
-		player & 1 ? IMG_PAD1 : IMG_PAD2,
-		position_x(pads[player].position, player & 2 ? INNER : OUTER),
-		position_y(pads[player].position, player & 2 ? INNER : OUTER)
-	);
+	int inout = player & 2 ? INNER : OUTER;
+	int nbdots = 1 + (inout == OUTER) * 2;
+	int space = 1000 + (inout == INNER) * 2000;
+	for (int i = -nbdots; i <= nbdots; ++i) {
+		blit(
+			player & 1 ? IMG_PAD1 : IMG_PAD2,
+			position_x(pads[player].position + i * space, inout),
+			position_y(pads[player].position + i * space, inout)
+		);
+	}
 }
 
 void scene(int t) {
