@@ -10,7 +10,12 @@ enum {
 };
 struct {
 	uint16_t position;
-} pads[4];
+} pads[4] = {
+	{5 * 8192},
+	{1 * 8192},
+	{3 * 8192},
+	{7 * 8192},
+};
 
 #define SPEED 500
 
