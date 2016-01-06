@@ -14,7 +14,19 @@ enum {
 	IMG_BALL,
 };
 
+enum {
+	BTN_P1_LEFT,
+	BTN_P1_RIGHT,
+	BTN_P2_LEFT,
+	BTN_P2_RIGHT,
+	BTN_P3_LEFT,
+	BTN_P3_RIGHT,
+	BTN_P4_LEFT,
+	BTN_P4_RIGHT,
+};
 
+
+char btn(int obj);
 void blit(int obj, int x, int y);
 void scene(int t);
 

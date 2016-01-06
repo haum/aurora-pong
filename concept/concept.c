@@ -15,6 +15,26 @@ struct {
 #define RESNB (sizeof(resources_info)/sizeof(*resources_info))
 SDL_Surface * resources[RESNB], *screen;
 
+struct {
+	SDL_Keycode key;
+	char pressed;
+} keys[] = {
+	[BTN_P1_LEFT]  = { SDLK_z, },
+	[BTN_P1_RIGHT] = { SDLK_e, },
+	[BTN_P2_LEFT]  = { SDLK_s, },
+	[BTN_P2_RIGHT] = { SDLK_d, },
+	[BTN_P3_LEFT]  = { SDLK_x, },
+	[BTN_P3_RIGHT] = { SDLK_c, },
+	[BTN_P4_LEFT]  = { SDLK_LEFT, },
+	[BTN_P4_RIGHT] = { SDLK_RIGHT, },
+};
+#define BTNNB (sizeof(keys)/sizeof(*keys))
+
+char btn(int obj) {
+	if (obj >= BTNNB) return 0;
+	return keys[obj].pressed;
+}
+
 SDL_Surface * load_bitmap(char * filename, char r, char g, char b) {
 	printf("Loading %s... ", filename);
 	fflush(stdout);
@@ -61,8 +81,21 @@ int main() {
 	while (!quit) {
 		SDL_Event e;
 		while (SDL_PollEvent(&e) != 0) {
-			if( e.type == SDL_QUIT )
+			if( e.type == SDL_QUIT ) {
 				quit = 1;
+			} else if (e.type == SDL_KEYDOWN) {
+				if (e.key.keysym.sym == SDLK_ESCAPE)
+					quit = 1;
+				for (int i = 0; i < BTNNB; ++i) {
+					if (e.key.keysym.sym == keys[i].key)
+						keys[i].pressed = 1;
+				}
+			} else if (e.type == SDL_KEYUP) {
+				for (int i = 0; i < BTNNB; ++i) {
+					if (e.key.keysym.sym == keys[i].key)
+						keys[i].pressed = 0;
+				}
+			}
 		}
 
 		scene(t);
