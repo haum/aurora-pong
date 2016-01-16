@@ -76,6 +76,7 @@ int main() {
 		}
 	}
 
+	init_scene();
 	int t = 0;
 	int quit = 0;
 	while (!quit) {

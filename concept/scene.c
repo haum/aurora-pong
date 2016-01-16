@@ -1,6 +1,7 @@
-#include <math.h>
-#include <stdint.h>
+#include "ints.h"
+#include "pad.h"
 #include "engine.h"
+#include <math.h>
 
 enum {
 	PLAYER1,
@@ -8,57 +9,45 @@ enum {
 	PLAYER3,
 	PLAYER4,
 };
-struct {
-	uint16_t position;
-} pads[4] = {
-	{5 * 8192},
-	{1 * 8192},
-	{3 * 8192},
-	{7 * 8192},
-};
 
 #define SPEED 500
 
-#define OUTER 104
-#define INNER 34
-int position_x(uint16_t pos, int width) {
-	return CENTER_X + width * sin(pos * M_PI * 2 / 65535) - 4;
-}
-int position_y(uint16_t pos, int width) {
-	return CENTER_Y + width * cos(pos * M_PI * 2 / 65535) - 4;
-}
+Pad pads[4];
+#define NBPADS (sizeof(pads)/sizeof(*pads))
 
-void blitpad(uint8_t player) {
-	if (player >= 4) return;
-	int inout = player & 2 ? INNER : OUTER;
-	int nbdots = 1 + (inout == OUTER) * 2;
-	int space = 1000 + (inout == INNER) * 2000;
-	for (int i = -nbdots; i <= nbdots; ++i) {
-		blit(
-			player & 1 ? IMG_PAD1 : IMG_PAD2,
-			position_x(pads[player].position + i * space, inout),
-			position_y(pads[player].position + i * space, inout)
-		);
-	}
+int btnright[NBPADS] = {
+	BTN_P1_RIGHT,
+	BTN_P2_RIGHT,
+	BTN_P3_RIGHT,
+	BTN_P4_RIGHT,
+};
+
+int btnleft[NBPADS] = {
+	BTN_P1_LEFT,
+	BTN_P2_LEFT,
+	BTN_P3_LEFT,
+	BTN_P4_LEFT,
+};
+
+void init_scene() {
+	Pad__init(&pads[PLAYER1], PadType_Inner_Team1, 8192*1);
+	Pad__init(&pads[PLAYER2], PadType_Inner_Team2, 8192*5);
+	Pad__init(&pads[PLAYER3], PadType_Outer_Team1, 8192*3);
+	Pad__init(&pads[PLAYER4], PadType_Outer_Team2, 8192*7);
 }
 
 void scene(int t) {
 	blit(IMG_BACKGROUND, 0, 0);
 
-	pads[PLAYER1].position += (SPEED * btn(BTN_P1_LEFT)) - (SPEED * btn(BTN_P1_RIGHT));
-	pads[PLAYER2].position += (SPEED * btn(BTN_P2_LEFT)) - (SPEED * btn(BTN_P2_RIGHT));
-	pads[PLAYER3].position += (SPEED * btn(BTN_P3_LEFT)) - (SPEED * btn(BTN_P3_RIGHT));
-	pads[PLAYER4].position += (SPEED * btn(BTN_P4_LEFT)) - (SPEED * btn(BTN_P4_RIGHT));
+	for (int i = 0; i < NBPADS; ++i)
+		Pad__move(&pads[i], btn(btnleft[i]) - btn(btnright[i]));
 
-	blitpad(PLAYER1);
-	blitpad(PLAYER2);
-	blitpad(PLAYER3);
-	blitpad(PLAYER4);
+	for (int i = 0; i < NBPADS; ++i)
+		Pad__draw(&pads[i]);
 
 	blit(
 		IMG_BALL,
 		CENTER_X + 100 * sin(t * M_PI / 20),
 		CENTER_Y + 50 * sin(t * M_PI / 50)
 	);
-
 }

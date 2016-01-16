@@ -28,6 +28,8 @@ enum {
 
 char btn(int obj);
 void blit(int obj, int x, int y);
+
+void init_scene();
 void scene(int t);
 
 #endif
