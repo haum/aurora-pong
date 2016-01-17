@@ -40,7 +40,11 @@ void scene(int t) {
 	blit(IMG_BACKGROUND, 0, 0);
 
 	for (int i = 0; i < NBPADS; ++i)
-		Pad__move(&pads[i], btn(btnleft[i]) - btn(btnright[i]));
+		Pad__move(&pads[i], btn(btnleft[i]), btn(btnright[i]));
+
+	for (int i = 0; i < NBPADS; ++i) {
+		Pad__process_friction(&pads[i], 10);
+	}
 
 	for (int i = 0; i < NBPADS; ++i)
 		Pad__draw(&pads[i]);

@@ -14,6 +14,9 @@ typedef enum {
 /** A pad controlled by player **/
 typedef struct {
 	uint16_t position; ///< Current position (1/65536th turn)
+	int16_t velocity; ///< Current velocity (position/compute step)
+	uint8_t force_l; ///< Player force applied to make pad turn left
+	uint8_t force_r; ///< Player force applied to make pad turn right
 	PadType type; ///< Type of pad (inner/outer ring + team)
 } Pad;
 
@@ -26,13 +29,20 @@ void Pad__init(Pad * this, PadType type, uint16_t position);
 
 /** Move pad (relative)
   * @param this  the pad
-  * @param delta small position shift
+  * @param force_l left force applied
+  * @param force_r right force applied
   */
-void Pad__move(Pad * this, int8_t delta);
+void Pad__move(Pad * this, uint8_t force_l, uint8_t force_r);
 
 /** Draw pad
   * @param this the pad
   */
 void Pad__draw(Pad * this);
+
+/** Compute friction effects
+  * @param this     the pad
+  * @param friction TBD
+  */
+void Pad__process_friction(Pad * this, uint8_t friction);
 
 #endif
