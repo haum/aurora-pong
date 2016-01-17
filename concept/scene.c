@@ -42,6 +42,9 @@ void scene(int t) {
 	for (int i = 0; i < NBPADS; ++i)
 		Pad__move(&pads[i], btn(btnleft[i]), btn(btnright[i]));
 
+	Pad__process_collision(&pads[PLAYER1], &pads[PLAYER2]);
+	Pad__process_collision(&pads[PLAYER3], &pads[PLAYER4]);
+
 	for (int i = 0; i < NBPADS; ++i) {
 		Pad__process_friction(&pads[i], 10);
 	}

@@ -54,6 +54,31 @@ void Pad__draw(Pad * this) {
 	}
 }
 
+void Pad__process_collision(Pad * this, Pad * other) {
+	int16_t wrap = 8000 - PAD_IS_OUTER_RING(this) * 1000;
+	int16_t diff = this->position - other->position;
+	uint16_t mean = other->position + diff / 2;
+	char do_it = 0;
+
+	if (diff > -wrap && diff < 0) {
+		do_it = 1;
+	} else if (diff < wrap && diff > 0) {
+		do_it = 1;
+		wrap = -wrap;
+	}
+
+	if (do_it) {
+		if (this->force_l && this->force_r) {
+			other->position = this->position + wrap;
+		} else if (other->force_l && other->force_r) {
+			this->position = other->position - wrap;
+		} else {
+			this->position = mean - wrap / 2;
+			other->position = mean + wrap / 2;
+		}
+	}
+}
+
 void Pad__process_friction(Pad * this, uint8_t friction) {
 	// Player force
 	int16_t delta = this->force_l * VELOCITY_INC;

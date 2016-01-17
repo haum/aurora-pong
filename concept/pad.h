@@ -39,6 +39,12 @@ void Pad__move(Pad * this, uint8_t force_l, uint8_t force_r);
   */
 void Pad__draw(Pad * this);
 
+/** Check and process collision between two pads
+  * @param this  the pad
+  * @param other the other pad
+  */
+void Pad__process_collision(Pad * this, Pad * other);
+
 /** Compute friction effects
   * @param this     the pad
   * @param friction TBD
